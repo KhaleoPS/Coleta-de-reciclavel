@@ -1,0 +1,66 @@
+## Plano de Testes
+
+Esta seção detalha a estratégia de testes para garantir a qualidade, segurança e robustez da aplicação, visando a maior cobertura possível.
+
+### Estratégia de Testes Adotada
+
+A estratégia adotada é baseada na **Pirâmide de Testes**, um modelo clássico que prioriza a distribuição de esforços de teste em diferentes níveis:
+
+1.  **Base da Pirâmide - Testes Unitários:** A maioria dos testes. São rápidos, baratos e testam a menor parte do código (métodos e classes) de forma isolada.
+2.  **Meio da Pirâmide - Testes de Integração:** Testam a interação entre diferentes componentes (ex: Controller -> Service -> Banco de Dados) para garantir que funcionem juntos.
+3.  **Topo da Pirâmide - Testes End-to-End (E2E):** Menor quantidade. Testam a aplicação completa do ponto de vista do usuário, simulando interações no navegador. São mais lentos e frágeis, mas essenciais para validar a experiência do usuário.
+
+### Ferramentas Utilizadas
+
+*   **Testes Unitários:** JUnit 5, Mockito
+*   **Testes de Integração:** Spring Boot Test (`@SpringBootTest`, `@DataJpaTest`), H2 (Banco de Dados em Memória)
+*   **Testes End-to-End (E2E):** Cypress
+*   **Testes de Segurança:** Spring Security Test
+
+### Plano de Cobertura de Testes
+
+#### 1. Testes Unitários (Alta Prioridade)
+*   **Objetivo:** Validar a lógica de negócio de forma isolada e rápida.
+*   **`AgendamentoService`:**
+    *   [ ] Criar testes para o método `agendar`, mockando o `AgendamentoRepository`.
+    *   [ ] Testar a regra de negócio que impede agendamentos com menos de 2 dias úteis de antecedência.
+    *   [ ] Testar o tratamento de exceções para cenários inesperados.
+*   **`AgendamentoController`:**
+    *   [ ] **Refatorar** os testes existentes de `@SpringBootTest` para `@WebMvcTest`. Isso os tornará mais leves, pois testarão apenas a camada web, mockando o `AgendamentoService`.
+    *   [ ] Garantir que todas as validações (`@Valid`) estão sendo acionadas corretamente para cada campo do formulário.
+
+#### 2. Testes de Integração (Média Prioridade)
+*   **Objetivo:** Garantir que as camadas da aplicação se comunicam corretamente.
+*   **API de Agendamento:**
+    *   [ ] Criar um teste de integração com `@SpringBootTest` que envie uma requisição para o endpoint `/agendar` e verifique se os dados são persistidos corretamente no banco de dados (usando um banco H2 em memória).
+*   **Repositórios (`AgendamentoRepository`, `MaterialRepository`):**
+    *   [ ] Criar testes com `@DataJpaTest` para validar as consultas customizadas, se houver.
+
+#### 3. Testes End-to-End (E2E) (Alta Prioridade para Fluxos Críticos)
+*   **Objetivo:** Validar a experiência completa do usuário final.
+*   **Fluxo do Cidadão:**
+    *   [X] Teste de "caminho feliz" para o agendamento (já implementado).
+    *   [ ] **Refatorar** o teste existente para usar seletores `data-cy` em vez de `id`, tornando-o mais robusto.
+    *   [ ] Criar testes para os "caminhos tristes" (submeter o formulário com campos inválidos e verificar as mensagens de erro).
+*   **Fluxo do Administrador:**
+    *   [ ] Testar o fluxo de login na área administrativa.
+    *   [ ] Testar a visualização e a exclusão de agendamentos.
+
+### Estratégia de Curto Prazo e Prioridades
+
+Para entregar a aplicação com um nível de confiança inicial alto e em um curto prazo, a estratégia é focar nos testes que cobrem os maiores riscos e os fluxos mais críticos.
+
+**Prioridades:**
+
+1.  **(Alta) Refinar Testes Existentes:**
+    *   **Ação:** Refatorar `AgendamentoControllerTest` para usar `@WebMvcTest` para ganho imediato de performance e foco.
+    *   **Ação:** Refatorar o teste E2E `agendamento.cy.js` para usar seletores `data-cy` para aumentar a robustez do teste mais crítico.
+
+2.  **(Alta) Cobrir a Lógica de Negócio Principal:**
+    *   **Ação:** Criar testes unitários para `AgendamentoService`, focando na validação da data. A lógica de negócio é o coração da aplicação.
+    *   **Ação:** Criar um teste E2E para o "caminho triste" (submissão de formulário com dados inválidos) para garantir que o feedback ao usuário funcione.
+
+3.  **(Média) Garantir a Segurança Básica:**
+    *   **Ação:** Criar um teste E2E que valide o bloqueio de acesso à área `/admin` para usuários não autenticados. É um teste simples e de alto impacto.
+
+Seguindo este plano, a aplicação terá uma cobertura sólida nos pontos mais críticos, permitindo entregas mais seguras e rápidas.

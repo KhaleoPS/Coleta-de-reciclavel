@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agendamento de Coleta de Recicláveis</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="email"], input[type="datetime-local"], textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .radio-group label, .checkbox-group label { display: inline-block; margin-right: 15px; font-weight: normal; }
+        #apartment-details { display: none; } /* Oculta os campos de apartamento por padrão */
+        .error-message { color: #d9534f; font-size: 0.9em; margin-top: 5px; }
+        button { width: 100%; padding: 12px; background-color: #5cb85c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #4cae4c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Agendar Coleta de Recicláveis</h1>
+        <!-- O formulário envia os dados para o endpoint /agendar via POST -->
+        <!-- th:object aponta para o objeto "agendamento" que passamos no Controller -->
+        <form th:action="@{/agendar}" th:object="${agendamento}" method="post">
+
+            <div class="form-group">
+                <label for="nomeCidadao">Nome Completo:</label>
+                <input type="text" id="nomeCidadao" th:field="*{nomeCidadao}" />
+                <div th:if="${#fields.hasErrors('nomeCidadao')}" th:errors="*{nomeCidadao}" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" th:field="*{email}" />
+                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="telefoneCidadao">Telefone para Contato:</label>
+                <input type="text" id="telefoneCidadao" th:field="*{telefoneCidadao}" />
+                <div th:if="${#fields.hasErrors('telefoneCidadao')}" th:errors="*{telefoneCidadao}" class="error-message"></div>
+            </div>
+
+            <!-- Campos de Endereço Detalhado -->
+            <div class="form-group">
+                <label for="rua">Rua:</label>
+                <input type="text" id="rua" th:field="*{rua}" />
+                <div th:if="${#fields.hasErrors('rua')}" th:errors="*{rua}" class="error-message"></div>
+            </div>
+            <div class="form-group">
+                <label for="numero">Número:</label>
+                <input type="text" id="numero" th:field="*{numero}" />
+                <div th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}" class="error-message"></div>
+            </div>
+            <div class="form-group">
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" th:field="*{bairro}" />
+                <div th:if="${#fields.hasErrors('bairro')}" th:errors="*{bairro}" class="error-message"></div>
+            </div>
+            <div class="form-group">
+                <label for="cidade">Cidade:</label>
+                <input type="text" id="cidade" th:field="*{cidade}" />
+                <div th:if="${#fields.hasErrors('cidade')}" th:errors="*{cidade}" class="error-message"></div>
+            </div>
+            <div class="form-group">
+                <label for="cep">CEP:</label>
+                <input type="text" id="cep" th:field="*{cep}" />
+                <div th:if="${#fields.hasErrors('cep')}" th:errors="*{cep}" class="error-message"></div>
+            </div>
+
+            <!-- Seleção de Tipo de Imóvel -->
+            <div class="form-group">
+                <label>Tipo de Imóvel:</label>
+                <div class="radio-group">
+                    <label th:each="tipo : ${tiposImovel}">
+                        <input type="radio" name="tipoImovel" th:field="*{tipoImovel}" th:value="${tipo}" />
+                        <span th:text="${tipo}">Tipo</span>
+                    </label>
+                </div>
+                <div th:if="${#fields.hasErrors('tipoImovel')}" th:errors="*{tipoImovel}" class="error-message"></div>
+            </div>
+
+            <!-- Campos Condicionais para Apartamento -->
+            <div id="apartment-details">
+                <div class="form-group">
+                    <label for="numeroApartamento">Número do Apartamento:</label>
+                    <input type="text" id="numeroApartamento" th:field="*{numeroApartamento}" />
+                    <div th:if="${#fields.hasErrors('numeroApartamento')}" th:errors="*{numeroApartamento}" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="bloco">Bloco (se não houver, digite 'Não se aplica'):</label>
+                    <input type="text" id="bloco" th:field="*{bloco}" placeholder="Ex: A, B, ou Não se aplica" />
+                    <div th:if="${#fields.hasErrors('bloco')}" th:errors="*{bloco}" class="error-message"></div>
+                </div>
+            </div>
+
+            <!-- Seleção Múltipla de Materiais -->
+            <div class="form-group">
+                <label>Tipos de Material Reciclável:</label>
+                <div class="checkbox-group">
+                    <label th:each="material : ${materiaisDisponiveis}">
+                        <input type="checkbox" th:field="*{tiposMaterial}" th:value="${material.id}" />
+                        <span th:text="${material.nome}">Material</span>
+                    </label>
+                </div>
+                <div th:if="${#fields.hasErrors('tiposMaterial')}" th:errors="*{tiposMaterial}" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="dataHoraSugerida">Data e Hora Sugerida para Coleta:</label>
+                <input type="datetime-local" id="dataHoraSugerida" th:field="*{dataHoraSugerida}" required />
+                <!-- 1. Local para a mensagem de erro instantânea (JavaScript) -->
+                <span id="dataError" class="error-message"></span>
+                <!-- 2. Local para a mensagem de erro do servidor (após enviar) -->
+                <div th:if="${#fields.hasErrors('dataHoraSugerida')}" th:errors="*{dataHoraSugerida}" class="error-message"></div>
+            </div>
+
+            <button type="submit">Agendar Coleta</button>
+        </form>
+    </div>
+
+    <!-- Scripts da Página -->
+    <script>
+        // --- Validação de Data (Client-side) ---
+        const dataInput = document.getElementById('dataHoraSugerida');
+        const errorSpan = document.getElementById('dataError');
+
+        function calcularDataMinima() {
+            let dataMinima = new Date();
+            let diasUteisAdicionados = 0;
+            while (diasUteisAdicionados < 2) {
+                dataMinima.setDate(dataMinima.getDate() + 1);
+                if (dataMinima.getDay() !== 0 && dataMinima.getDay() !== 6) {
+                    diasUteisAdicionados++;
+                }
+            }
+            dataMinima.setHours(0, 0, 0, 0);
+            return dataMinima;
+        }
+
+        dataInput.addEventListener('change', function() {
+            const dataSelecionada = new Date(this.value);
+            const dataMinima = calcularDataMinima();
+            if (dataSelecionada < dataMinima) {
+                errorSpan.textContent = 'A data da coleta deve ser pelo menos daqui há 2 dias úteis.';
+            } else {
+                errorSpan.textContent = ''; // Limpa a mensagem de erro se a data for válida
+            }
+        });
+
+        // --- Máscara para o campo de telefone ---
+        const telefoneInput = document.getElementById('telefoneCidadao');
+
+        telefoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+            let formattedValue = '';
+
+            if (value.length > 0) {
+                formattedValue = '(' + value.substring(0, 2);
+            }
+            if (value.length > 2) {
+                // Verifica se é celular (9 dígitos + DDD) ou fixo (8 dígitos + DDD)
+                if (value.length <= 10) { // Fixo: (XX) XXXX-XXXX
+                    formattedValue += ') ' + value.substring(2, 6);
+                    if (value.length > 6) {
+                        formattedValue += '-' + value.substring(6, 10);
+                    }
+                } else { // Celular: (XX) X XXXX-XXXX
+                    formattedValue += ') ' + value.substring(2, 3) + ' ' + value.substring(3, 7);
+                    if (value.length > 7) {
+                        formattedValue += '-' + value.substring(7, 11);
+                    }
+                }
+            }
+            e.target.value = formattedValue;
+        });
+
+        // --- Lógica para exibir/ocultar campos de apartamento ---
+        const apartmentDetailsDiv = document.getElementById('apartment-details');
+        const tipoImovelRadios = document.querySelectorAll('input[name="tipoImovel"]');
+
+        function toggleApartmentFields() {
+            const tipoSelecionado = document.querySelector('input[name="tipoImovel"]:checked');
+            apartmentDetailsDiv.style.display = (tipoSelecionado && tipoSelecionado.value === 'Apartamento') ? 'block' : 'none';
+        }
+
+        tipoImovelRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                toggleApartmentFields();
+                // Limpa os campos de apartamento se o usuário mudar para "Casa"
+                if (this.value !== 'Apartamento') {
+                    document.getElementById('numeroApartamento').value = '';
+                    document.getElementById('bloco').value = '';
+                }
+            });
+        });
+
+        // --- Executa a verificação quando a página carrega ---
+        // Isso garante que se a página for recarregada com "Apartamento" já selecionado (após um erro de validação),
+        // os campos de detalhe do apartamento serão exibidos corretamente.
+        document.addEventListener('DOMContentLoaded', toggleApartmentFields);
+
+    </script>
+</body>
+</html>

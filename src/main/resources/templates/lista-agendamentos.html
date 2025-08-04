@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Agendamentos</title>
+    <style>
+        /* Basic styles for admin area */
+        body { font-family: sans-serif; margin: 0; background-color: #f8f9fa; }
+        .admin-header { background-color: #343a40; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .admin-header h1 { margin: 0; font-size: 1.5em; }
+        .admin-header .logout-form button { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        .admin-nav { background-color: #e9ecef; padding: 10px 30px; border-bottom: 1px solid #dee2e6; }
+        .admin-nav a { margin-right: 20px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .container { padding: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .filter-form { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 20px; align-items: center; }
+        .filter-form .form-group { display: flex; flex-direction: column; }
+    </style>
+</head>
+<body>
+
+<header class="admin-header">
+    <h1>Área Administrativa</h1>
+    <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit">Sair</button>
+    </form>
+</header>
+
+<nav class="admin-nav">
+    <a th:href="@{/admin/agendamentos}">Agendamentos</a>
+    <a th:href="@{/materiais}">Gerenciar Materiais</a>
+</nav>
+
+<div class="container">
+    <h2>Lista de Agendamentos</h2>
+
+    <!-- RN003.3: Filtros por data e status -->
+    <form th:action="@{/admin/agendamentos}" method="get" class="filter-form">
+        <div class="form-group">
+            <label for="filtroData">Filtrar por Data:</label>
+            <input type="date" id="filtroData" name="filtroData" th:value="${param.filtroData != null ? param.filtroData[0] : ''}">
+        </div>
+        <div class="form-group">
+            <label for="filtroStatus">Filtrar por Status:</label>
+            <select id="filtroStatus" name="filtroStatus">
+                <option value="">Todos</option>
+                <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}" th:selected="${param.filtroStatus != null and param.filtroStatus[0] == status}"></option>
+            </select>
+        </div>
+        <button type="submit">Filtrar</button>
+        <a th:href="@{/admin/agendamentos}">Limpar Filtros</a>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Protocolo</th>
+                <th>Nome do Cidadão</th>
+                <th>Materiais</th>
+                <th>Data Agendada</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- RN003.2: Exibição dos dados -->
+            <tr th:each="agendamento : ${agendamentos}">
+                <td th:text="${agendamento.id}">1</td>
+                <td th:text="${agendamento.nomeCidadao}">Nome do Cidadão</td>
+                <td th:text="${agendamento.getMateriaisFormatados()}">Plástico, Vidro</td>
+                <td th:text="${#temporals.format(agendamento.dataHoraSugerida, 'dd/MM/yyyy HH:mm')}">25/10/2023 14:00</td>
+                <td th:text="${agendamento.status}">Agendado</td>
+                <td>
+                    <a th:href="@{/admin/agendamentos/{id}(id=${agendamento.id})}">Ver Detalhes</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

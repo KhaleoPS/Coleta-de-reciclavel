@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agendamento Realizado com Sucesso!</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; background-color: #f4f7f6; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #4CAF50; }
+        p { font-size: 1.1em; }
+        .protocol { font-size: 1.5em; font-weight: bold; color: #333; background-color: #e8f5e9; padding: 10px; border-radius: 4px; display: inline-block; margin-top: 10px; }
+        .summary { text-align: left; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .back-link { display: inline-block; margin-top: 30px; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container" th:if="${agendamento}">
+        <h1>Agendamento solicitado com sucesso!</h1>
+        <p>Sua solicitação de coleta foi registrada. Anote o seu número de protocolo:</p>
+        <div class="protocol" th:text="${agendamento.id}">123456</div>
+
+        <div class="summary">
+            <strong>Resumo da Solicitação:</strong>
+            <p><strong>Nome:</strong> <span th:text="${agendamento.nomeCidadao}"></span></p>
+            <p><strong>Endereço para Coleta:</strong> <span th:text="${agendamento.getEnderecoCompleto()}"></span></p>
+            <p><strong>Data Sugerida:</strong> <span th:text="${#temporals.format(agendamento.dataHoraSugerida, 'dd/MM/yyyy HH:mm')}"></span></p>
+            <p><strong>Materiais Selecionados:</strong> <span th:text="${agendamento.getMateriaisFormatados()}"></span></p>
+        </div>
+
+        <a href="/" class="back-link">Fazer Novo Agendamento</a>
+    </div>
+
+</body>
+</html>
