@@ -47,6 +47,7 @@ Para executar os testes do backend com JUnit e MockMvc, use o comando:
 ## Sugestão de melhoria no sistema
 
 1. Enviar um e-mail ao cidadão contendo as informações do agendamento realizado no site para garantir que o mesmo tenha as informações necessárias.
+2. No formulário de agendamento foi alterado o endereço para ser preenchido em seus respectivos campos, separando por: rua, número, bairro, CEP e uma validação para marcar se é casa ou apartamento.
 
 ## Especificações de Uso (Gherkin)
 
