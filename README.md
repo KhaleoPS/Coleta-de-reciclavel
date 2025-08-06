@@ -19,7 +19,6 @@ Antes de começar, você vai precisar ter instalado em sua máquina:
 
 Para iniciar a aplicação Spring Boot, execute o seguinte comando no terminal, na raiz do projeto:
 
-
 mvnw.cmd spring-boot:run
 
 A aplicação estará disponível em `http://localhost:8080`.
