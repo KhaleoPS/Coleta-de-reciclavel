@@ -61,4 +61,6 @@ O plano de teste e sua estratégia está no arquivo 'Plano de testes.txt' na pas
 Durante o teste foi identificado um bug que estava permitindo agendar com data menor que 2 dias úteis.
 As informações estão no arquivo 'Relatório de Execução de Teste - Sistema de Agendamento de Reciclagem.docx' na pasta 'Relatórios'
 
+## Mockup
 
+Arquivo mockup-agendamento.html com protótipo da tela da aplicação
