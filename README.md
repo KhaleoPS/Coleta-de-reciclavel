@@ -63,4 +63,4 @@ As informações estão no arquivo 'Relatório de Execução de Teste - Sistema 
 
 ## Mockup
 
-Arquivo mockup-agendamento.html com protótipo da tela da aplicação
+Arquivo mockup-agendamento.html com protótipo da tela da aplicação. Para executá-lo, baixe o arquivo em seu computador e abra-o usando seu navegador padrão.
