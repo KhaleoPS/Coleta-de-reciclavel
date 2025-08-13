@@ -10,18 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Contêiner de serviço para rodar com o job
     services:
-      # Rótulo usado para acessar o contêiner de serviço
       postgres:
-        # Imagem do Docker Hub
         image: postgres:13
-        # Variáveis de ambiente para configurar no contêiner
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpassword
           POSTGRES_DB: testdb
-        # Opções para o contêiner (verificação de saúde para garantir que o BD está pronto)
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -36,12 +31,13 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Wait for PostgreSQL service to be ready
+      run: sleep 15
+
     - name: Build e Teste com Maven
       env:
-        # Ativa o perfil 'test' do Spring Boot para usar o application-test.properties
         SPRING_PROFILES_ACTIVE: test
       run: mvn -B package --file pom.xml
 
-    # Opcional: Envia o grafo de dependências para o GitHub
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v4
