@@ -31,8 +31,15 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Wait for PostgreSQL service to be ready
-      run: sleep 15
+    - name: Install PostgreSQL client
+      run: sudo apt-get -y install postgresql-client
+
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        until pg_isready -h localhost -p 5432 -U testuser; do
+          echo "Waiting for postgres..."
+          sleep 2
+        done
 
     - name: Build e Teste com Maven
       env:
