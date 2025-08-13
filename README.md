@@ -19,7 +19,7 @@ Antes de começar, você vai precisar ter instalado em sua máquina:
 
 Para iniciar a aplicação Spring Boot, execute o seguinte comando no terminal, na raiz do projeto:
 
-mvnw.cmd spring-boot:run
+mvn.cmd spring-boot:run
 
 A aplicação estará disponível em `http://localhost:8080`.
 
@@ -61,9 +61,4 @@ O plano de teste e sua estratégia está no arquivo 'Plano de testes.txt' na pas
 Durante o teste foi identificado um bug que estava permitindo agendar com data menor que 2 dias úteis.
 As informações estão no arquivo 'Relatório de Execução de Teste - Sistema de Agendamento de Reciclagem.docx' na pasta 'Relatórios'
 
-## Requisito RQNF12
 
-Todos os requisitos funcionais e não funcionais do sistema foram entregues.
-
-## SonarQube 
-Não foi utilizado.
